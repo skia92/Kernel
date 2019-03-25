@@ -18,7 +18,7 @@ inc (int *a)
 
 만약 개발자님이 ISO C90 프로그램에 포함되어야 하는 header file 를 작성하고 있다면, `inline` 대신에 `__inline__` 를 사용해야합니다. [Alternative Keywords](https://gcc.gnu.org/onlinedocs/gcc-7.4.0/gcc/Alternate-Keywords.html#Alternate-Keywords) 참조하세요!
 
-세 가지 타입의 function inlining 은 두 가지 경우에 중요하게 사용될 수 있습니다.
+세 가지 타입의 function inlining 은 중요한 두 가지 경우에 비슷하게 동작될 수 있습니다.
 1. 위의 예시처럼 `inline` keyword 를 `static` function 에서 사용한 경우
 2. function 을 선언할 때 `inline` keyword 를 사용하지않고 function 정의에서 `inline` 사용한 경우:
   ```c
@@ -29,6 +29,10 @@ inc (int *a)
     return (*a)++;  
   }
   ```
+두 가지 모두의 경우에서 프로그램은 프로그램의 처리 속도를 제외하고 마치 `inline` keyword 가 사용된 적이 없었던 것처럼 동작합니다. 
+
+function 이 `static` 과 `inline` 을 동시에 사용하는 경우 만약 function 이 모든 caller 에게 통합되었고 function 의 주소가 전혀 사용되지 않았다면, function 의 assembler code 는 절대로 참조되지 않습니다. 이 경우, GCC는 개발자님이 `-fkeep-inline-functions` 를 명시하지 않은 이상 function 의 assembler 를 실제로 출력하지 않습니다. 만약 통합되지 않은 호출이 있을 경우, function 은 평소처럼 assembler 로 compile 됩니다. 만약 프로그램이 function 의 주소를 참조하였다면 이것은 inline 이 될 수 없기 때문에 function 은 반드시 평소처럼 (assembly code) compile 되어야 합니다.
+
 
 
 
